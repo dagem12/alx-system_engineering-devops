@@ -1,2 +1,2 @@
 #!/bin/bash
-w=water s=stir. b=bestchol\nfor i in $(seq 0 4); do WATER=${WATER//${w:$i:1}/$i} STIR=${STIR//${s:$i:1}/$i}; done\nn=$((10#$WATER+10#$STIR))\nres=\nwhile [ $n -gt 0 ]; do d=$((n%9)) res=${b:$d:1}$res n=$((n/9)); done\necho $res
+echo $(( $(echo "$WATER" | tr 'water' '01234') + $(echo "$STIR" | tr 'stir' '01234') )) | tr '0123456789' 'bestchol'
