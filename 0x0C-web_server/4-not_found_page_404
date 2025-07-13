@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installs and configures Nginx on an Ubuntu server to serve "Hello World!" on port 80
+# Installs and configures Nginx on an Ubuntu server with a custom 404 page
 
 # Update package list and install Nginx with -y flag
 apt-get update -y
@@ -8,8 +8,10 @@ apt-get install nginx -y
 # Create a simple HTML page with "Hello World!"
 echo "Hello World!" > /var/www/html/index.html
 
-# Ensure Nginx is configured to listen on port 80 (default configuration is usually sufficient)
-# Create or update the default Nginx configuration to serve the index.html
+# Create a custom 404 page
+echo "Ceci n'est pas une page" > /var/www/html/404.html
+
+# Configure Nginx to listen on port 80, add a redirect, and use the custom 404 page
 cat > /etc/nginx/sites-available/default <<EOF
 server {
     listen 80 default_server;
@@ -22,6 +24,15 @@ server {
 
     location / {
         try_files \$uri \$uri/ /index.html;
+    }
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
     }
 }
 EOF
