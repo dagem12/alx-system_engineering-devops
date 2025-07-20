@@ -1,0 +1,29 @@
+
+#server block (listens on port 80 and redirects to HTTPS)
+server {
+    listen 80;
+    server_name yourdomain.com www.yourdomain.com;
+
+    # Redirect all traffic to HTTPS with 301 status
+    return 301 https://$host$request_uri;
+}
+
+# HTTPS server block (actual content goes here)
+server {
+    listen 443 ssl;
+    server_name yourdomain.com www.yourdomain.com;
+
+    ssl_certificate /etc/ssl/certs/your_cert.pem;
+    ssl_certificate_key /etc/ssl/private/your_key.pem;
+
+    # Optional security enhancements
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;  # or root /var/www/html;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
